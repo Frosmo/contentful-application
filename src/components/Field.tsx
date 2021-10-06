@@ -1,79 +1,19 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Paragraph, Notification, Select, Option, Button, Pill, Grid, GridItem } from '@contentful/forma-36-react-components';
+import React, { useEffect, useState } from 'react';
+import { Paragraph, Notification, Select, Option, Button, Pill, Grid, GridItem, Note } from '@contentful/forma-36-react-components';
 import { FieldExtensionSDK } from '@contentful/app-sdk';
-import { AppInstallationParameters } from './ConfigScreen';
-import { getBaseUrl } from '../frosmo';
+// import { AppInstallationParameters } from './ConfigScreen';
+import { Config as AppInstallationParameters, getSegments, GraniittiError, Segment as FrosmoSegment } from '../graniitti';
 
 interface FieldProps {
   sdk: FieldExtensionSDK;
 }
 
-interface FrosmoSegmentGroup {
-  name: string;
-}
-
-interface FrosmoSegment {
-  segment_name: string,
-  title: string;
-  group: null | FrosmoSegmentGroup
-}
-
-async function getSegments(token: AppInstallationParameters['graniittiToken'], region: AppInstallationParameters['region'], siteId: AppInstallationParameters['siteId']): Promise<FrosmoSegment[]> {
-  const baseUrl = getBaseUrl(region);
-
-  if (!baseUrl) {
-    throw new Error(`Invalid region ${region}`);
-  }
-
-  const url = `${baseUrl}/sites/${siteId}/segments?includes=group`;
-
-  try {
-    const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-    if (response.ok) {
-      const segments = await response.json() as FrosmoSegment[];
-      
-      return segments.map((s) => {
-        return {
-          title: s.title, 
-          segment_name: s.segment_name, 
-          group: s.group
-        }
-      });
-    } else {
-      switch (response.status) {
-        case 401:
-          Notification.error('Frosmo Access Token is invalid');
-          // The server could not authenticate the request because the access token is invalid or missing.
-          break;
-        case 403:
-          // The server could not authorize access to the target resource because the access token does not grant sufficient permission.
-          Notification.error('This Frosmo Access Token is not valid for the given Site ID');
-          break;
-        case 404:
-          // The server could not find the requested site.
-          Notification.error('No Frosmo Site found with the given Site ID');
-          break;
-        default:
-          Notification.error("Connection failed")
-      }
-      return [];
-    }
-  } catch (e) {
-    Notification.error("Connection to Frosmo failed");
-    return [];
-  }
-}
-
 const Field = (props: FieldProps) => {
-  const [parameters, setParameters] = useState<AppInstallationParameters>({graniittiToken: '', region: 'eu', siteId: null});
+  const [parameters, setParameters] = useState<AppInstallationParameters>({token: '', region: 'eu', siteId: 0});
   const [segments, setSegments] = useState<FrosmoSegment[]>([]);
   const [selectedSegment, setSelectedSegment] = useState<string>('');
   const [selectedSegments, setSelectedSegments] = useState<string[]>([]);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     setSelectedSegments(props.sdk.field.getValue() || []);
@@ -81,11 +21,20 @@ const Field = (props: FieldProps) => {
 
   useEffect(() => {
     async function fetchSegments() {
-      const segments = await getSegments(parameters.graniittiToken, parameters.region, parameters.siteId);
-      setSegments(segments);
+      try {
+        const segments = await getSegments(parameters);
+        setSegments(segments);
+      } catch (error) {
+        if (error instanceof GraniittiError) {
+          Notification.error(error.message);
+        } else {
+          Notification.error("Connection to Frosmo failed");
+        }
+        setError('Unable to load Frosmo segments. Please check the application configuration!');
+      }
     };
 
-    if (parameters.graniittiToken) {
+    if (parameters.token) {
       fetchSegments();
     }
   }, [parameters]);
@@ -122,7 +71,6 @@ const Field = (props: FieldProps) => {
       <GridItem>
         <Button buttonType="primary" disabled={!selectedSegment} onClick={() => addFrosmoSegment(selectedSegment)}>Add</Button>
       </GridItem>
-      Segment: '{selectedSegment}'
     </Grid>
   }
 
@@ -174,6 +122,13 @@ const Field = (props: FieldProps) => {
 
     return list;
   }
+
+  if (error) {
+    return <>
+      <Paragraph><Note noteType="negative">{error}</Note></Paragraph>
+    </>
+  }
+  
 
   // If you only want to extend Contentful's default editing experience
   // reuse Contentful's editor components
