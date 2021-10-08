@@ -93,7 +93,7 @@ const Field = (props: FieldProps) => {
     const index = segmentList.indexOf(segment);
 
     if (index >= 0) {
-      const newList = segmentList.filter((s, i) => i !== index)
+      const newList = segmentList.filter((s: FrosmoSegment, i: number) => i !== index)
       await props.sdk.field.setValue(newList);
       setSelectedSegments(newList);
     }

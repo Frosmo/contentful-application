@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { AppExtensionSDK } from '@contentful/app-sdk';
-import { HelpText, Heading, Form, Workbench, Paragraph, TextField, SelectField, Option, Button, Spinner, Notification } from '@contentful/forma-36-react-components';
+import { FormLabel, TextInput, HelpText, Heading, Form, Workbench, Paragraph, TextField, SelectField, Option, Button, Spinner, Notification } from '@contentful/forma-36-react-components';
 import { css } from 'emotion';
 import { Config as AppInstallationParameters, getBaseUrl, getSite, GraniittiError } from '../graniitti';
 
@@ -106,16 +106,21 @@ const Config = (props: ConfigProps) => {
         <img src="frosmo_logo.png" alt="Frosmo logo" width="150"></img>
         <Paragraph>Please set up the connection first before you can start using Frosmo in your content items.</Paragraph>
 
-        <TextField
-          name="token"
-          id="token"
-          labelText="Token"
-          helpText="Please enter your Frosmo Token"
-          required
-          onChange={(event) => onTokenUpdate(event.target.value)}
-          value={parameters.token}
-        />
-        <HelpText><a href="https://docs.frosmo.com/display/dev/Graniitti+API+authentication">Learn more</a></HelpText>
+        <>
+          <FormLabel htmlFor="token">Token</FormLabel>
+          <TextInput
+            id="token"
+            name="token"
+            type="text"
+            required
+            onChange={(event) => onTokenUpdate(event.target.value)}
+            value={parameters.token}
+          />
+          <HelpText>
+            Please enter your Frosmo Token{' '} 
+             <a href="https://docs.frosmo.com/display/dev/Graniitti+API+authentication" target="_blank" rel="noreferrer">Learn more</a>
+          </HelpText>
+        </>
 
         <SelectField
           name="region"
