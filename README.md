@@ -1,3 +1,24 @@
+# Frosmo Contentful app
+
+This project includes the code for Frosmo's Contentful App which allows Frosmo segments to be attached to Contentful content items.
+
+## Setup
+
+### App (organization) configuration
+You can run the project as per instructions found below. When setting up the app in Contentful select the following locations:
+* App configuration screen
+* Entry field -> Short text, List
+
+### App space configuration
+You need to configure the App with following configuration options:
+* Frosmo Graniitti Token https://docs.frosmo.com/display/dev/Graniitti+API+authentication
+* Frosmo region. Region is determined by the Frosmo Control Panel domain (eg. US -> https://admin.us.frosmo.com)
+* Frosmo site ID. This is the site ID which will be used to get the segments from. Site ID can be found from Frosmo Control Panel -> Company Settings page.
+
+Once setup the App can be used in a content model.
+
+# Contentful init project README
+
 This project was bootstrapped with [Create Contentful App](https://github.com/contentful/create-contentful-app).
 
 ## Available Scripts
