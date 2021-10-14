@@ -8,9 +8,9 @@ export interface Config {
 const GRANIITTI_URLS = {
   'eu': 'https://graniitti.inpref.com/v0',
   'fi1': 'https://graniitti.fi1.frosmo.com/v0',
-  'eu2': 'https://graniitti.fi1.frosmo.com/v0',
-  'asia': 'https://graniitti.fi1.frosmo.com/v0',
-  'us': 'https://graniitti.fi1.frosmo.com/v0',
+  'eu2': 'https://graniitti.eu2.frosmo.com/v0',
+  'asia': 'https://graniitti.asia.frosmo.com/v0',
+  'us': 'https://graniitti.us.frosmo.com/v0',
 };
 
 export interface Site {
