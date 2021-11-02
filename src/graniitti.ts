@@ -51,7 +51,7 @@ async function request(
     switch (res.status) {
       // The server could not authenticate the request because the access token is invalid or missing.
       case 401:
-        throw new GraniittiError('Frosmo Access Token is invalid');
+        throw new GraniittiError('Frosmo Access Token is invalid. Please check that the Token and the Region are correct.');
       // The server could not authorize access to the target resource because the access token does not grant sufficient permission.
       case 403:
         throw new GraniittiError('This Frosmo Access Token is not valid for the given Site ID');

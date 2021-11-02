@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { AppExtensionSDK } from '@contentful/app-sdk';
-import { FormLabel, TextInput, HelpText, Heading, Form, Workbench, Paragraph, TextField, SelectField, Option, Button, Spinner, Notification } from '@contentful/forma-36-react-components';
+import { FormLabel, TextInput, HelpText, Heading, Form, Workbench, Paragraph, TextField, SelectField, Option, Button, Notification } from '@contentful/forma-36-react-components';
 import { css } from 'emotion';
 import { Config as AppInstallationParameters, getBaseUrl, getSite, GraniittiError } from '../graniitti';
 
@@ -100,10 +100,10 @@ const Config = (props: ConfigProps) => {
   }
 
   return (
-    <Workbench className={css({ margin: '80px' })}>
+    <Workbench className={css({ margin: '20px' })}>
       <Form>
-        <Heading>Frosmo configuration</Heading>
-        <img src="frosmo_logo.png" alt="Frosmo logo" width="150"></img>
+        <Heading>Frosmo configuration <img src="frosmo_logo.png" alt="Frosmo logo" width="60" style={{verticalAlign: "top", marginLeft: '20px'}}></img></Heading>
+        
         <Paragraph>Please set up the connection first before you can start using Frosmo in your content items.</Paragraph>
 
         <>
@@ -148,12 +148,7 @@ const Config = (props: ConfigProps) => {
           value={parameters.siteId ? String(parameters.siteId) : ''}
         />
 
-        <Button buttonType="primary" onClick={onTestConnection} disabled={isTestConnectionLoading}>Test Connection</Button>
-        {isTestConnectionLoading &&
-        <div>
-          Testing connection <Spinner />
-        </div>
-        }
+        <Button buttonType="primary" onClick={onTestConnection} disabled={isTestConnectionLoading} loading={isTestConnectionLoading}>Test Connection</Button>
       </Form>
     </Workbench>
   );

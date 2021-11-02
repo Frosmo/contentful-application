@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Paragraph, Notification, Select, Option, Button, Pill, Grid, GridItem, Note } from '@contentful/forma-36-react-components';
+import { Paragraph, Notification, Select, Option, Pill, Grid, GridItem, Note, Flex } from '@contentful/forma-36-react-components';
 import { FieldExtensionSDK } from '@contentful/app-sdk';
-// import { AppInstallationParameters } from './ConfigScreen';
 import { Config as AppInstallationParameters, getSegments, GraniittiError, Segment as FrosmoSegment } from '../graniitti';
 
 interface FieldProps {
@@ -11,12 +10,11 @@ interface FieldProps {
 const Field = (props: FieldProps) => {
   const [parameters, setParameters] = useState<AppInstallationParameters>({token: '', region: 'eu', siteId: 0});
   const [segments, setSegments] = useState<FrosmoSegment[]>([]);
-  const [selectedSegment, setSelectedSegment] = useState<string>('');
   const [selectedSegments, setSelectedSegments] = useState<string[]>([]);
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    setSelectedSegments(props.sdk.field.getValue() || []);
+    setSelectedSegments(props.sdk.field.getValue() || []);
   }, [props.sdk]);
 
   useEffect(() => {
@@ -48,6 +46,9 @@ const Field = (props: FieldProps) => {
         setParameters(currentParameters);
       }
     })();
+
+    // Function that resizes iframe on height changes
+    props.sdk.window.startAutoResizer()
   }, [props.sdk]);
 
   function renderSegmentsSelector() {
@@ -63,13 +64,10 @@ const Field = (props: FieldProps) => {
         <Select
           name="segments"
           id="segments"
-          onChange={(event) => setSelectedSegment(event.target.value)}
+          onChange={(event) => event.target.value && addFrosmoSegment(event.target.value)}
         >
           {selectOption.concat(options)}
         </Select>
-      </GridItem>
-      <GridItem>
-        <Button buttonType="primary" disabled={!selectedSegment} onClick={() => addFrosmoSegment(selectedSegment)}>Add</Button>
       </GridItem>
     </Grid>
   }
@@ -120,7 +118,8 @@ const Field = (props: FieldProps) => {
       />
     });
 
-    return list;
+    return <Flex flexWrap="wrap" marginTop="spacingM">{list}</Flex>
+  
   }
 
   if (error) {
@@ -128,15 +127,14 @@ const Field = (props: FieldProps) => {
       <Paragraph><Note noteType="negative">{error}</Note></Paragraph>
     </>
   }
-  
 
   // If you only want to extend Contentful's default editing experience
   // reuse Contentful's editor components
   // -> https://www.contentful.com/developers/docs/extensibility/field-editors/
   return <>
     {selectedSegments.length === 0 && <Paragraph>No Frosmo segments linked to the content. <img src="frosmo_logo.png" alt="Frosmo logo" height="15px"></img></Paragraph>}
-    {selectedSegments.length > 0 && renderSelectedSegments()}
     {segments.length > 0 && renderSegmentsSelector()}
+    {selectedSegments.length > 0 && renderSelectedSegments()}
   </>;
 };
 
