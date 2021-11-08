@@ -53,10 +53,10 @@ const Field = (props: FieldProps) => {
 
   function renderSegmentsSelector() {
     const segmentList = props.sdk.field.getValue();
-    const selectOption = [<Option value="">Select a Frosmo segment</Option>];
+    const selectOption = [<Option key={0} value="">Select a Frosmo segment</Option>];
     const options = segments.map(segment => {
       const disabled = segmentList && segmentList.indexOf(segment.segment_name) >= 0;
-      return <Option value={segment.segment_name} disabled={disabled}>{segment.group ? segment.group.name + ' - ' : ''} {segment.title}</Option>
+      return <Option key={segment.segment_name} value={segment.segment_name} disabled={disabled}>{segment.group ? segment.group.name + ' - ' : ''} {segment.title}</Option>
     });
 
     return <Grid columns="2fr 1fr" rowGap="spacingM" columnGap="spacingM">
@@ -74,13 +74,12 @@ const Field = (props: FieldProps) => {
 
   async function addFrosmoSegment(segment: any) {
     let segmentList = props.sdk.field.getValue();
-
     if (!segmentList) {
       segmentList = [];
     }
     segmentList.push(segment);
     await props.sdk.field.setValue(segmentList);
-    setSelectedSegments(segmentList);
+    setSelectedSegments([...segmentList]);
   }
 
   async function removeFrosmoSegment(segment: string) {
@@ -100,26 +99,19 @@ const Field = (props: FieldProps) => {
   function renderSelectedSegments() {
     const list = selectedSegments.map((segmentName, index) => {
       const segment: FrosmoSegment | undefined = segments.find(s => s.segment_name === segmentName);
-      if (!segment) {
-        return <Pill
-          tabIndex={index}
-          testId="pill-item"
-          label={segmentName}
-          onClose={() => {removeFrosmoSegment(segmentName)}}
-          style={{marginRight: '5px', marginBottom: '5px'}}
-        />;
-      }
+      const segmentLabel = segment ? segment.title : segmentName;
+
       return <Pill
+        key={index}
         tabIndex={index}
         testId="pill-item"
-        label={segment.title}
+        label={segmentLabel}
         onClose={() => {removeFrosmoSegment(segmentName)}}
         style={{marginRight: '5px', marginBottom: '5px'}}
       />
     });
 
     return <Flex flexWrap="wrap" marginTop="spacingM">{list}</Flex>
-  
   }
 
   if (error) {
