@@ -78,8 +78,9 @@ const Field = (props: FieldProps) => {
       segmentList = [];
     }
     segmentList.push(segment);
-    await props.sdk.field.setValue(segmentList);
-    setSelectedSegments([...segmentList]);
+    const newList = [...segmentList];
+    await props.sdk.field.setValue(newList);
+    setSelectedSegments(newList);
   }
 
   async function removeFrosmoSegment(segment: string) {
