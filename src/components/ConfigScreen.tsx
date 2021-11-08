@@ -1,16 +1,19 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { AppExtensionSDK } from '@contentful/app-sdk';
-import { FormLabel, TextInput, HelpText, Heading, Form, Workbench, Paragraph, TextField, SelectField, Option, Button, Notification } from '@contentful/forma-36-react-components';
-import { css } from 'emotion';
+import { FormLabel, TextInput, HelpText, Heading, Form, Paragraph, Note, Select, SelectField, Spinner, Option, Button, Notification } from '@contentful/forma-36-react-components';
 import { Config as AppInstallationParameters, getBaseUrl, getSite, GraniittiError } from '../graniitti';
+import styles from './ConfigScreen.styles';
+import { getSites, Site } from '../graniitti';
 
 interface ConfigProps {
   sdk: AppExtensionSDK;
 }
 
 const Config = (props: ConfigProps) => {
-  const [parameters, setParameters] = useState<AppInstallationParameters>({token: '', region: 'eu', siteId: 0});
+  const [parameters, setParameters] = useState<AppInstallationParameters>({ token: '', region: 'eu', siteId: 0 });
   const [isTestConnectionLoading, setTestConnectionLoading] = useState<boolean>(false);
+  const [sites, setSites] = useState<Site[]>([])
+  const [sitesLoading, setSitesLoading] = useState<boolean>(false)
 
   const onConfigure = useCallback(async () => {
     // This method will be called when a user clicks on "Install"
@@ -53,16 +56,35 @@ const Config = (props: ConfigProps) => {
     })()
   }, [props.sdk])
 
+  const fetchSites = useCallback(async () => {
+    setSitesLoading(true);
+    try {
+      const sites = await getSites(parameters);
+      setSites(sites);
+    } catch (error) {
+      setSites([]);
+    }
+    setSitesLoading(false);
+  }, [parameters]);
+
+  useEffect(() => {
+    if (parameters.token && parameters.region) {
+      fetchSites();
+    } else {
+      setSites([]);
+    }
+  }, [parameters, fetchSites]);
+
   function onTokenUpdate(token: AppInstallationParameters['token']) {
-    setParameters({...parameters, token})
+    setParameters({ ...parameters, token });
   }
-  
+
   function onSiteIdUpdate(siteId: AppInstallationParameters['siteId']) {
-    setParameters({...parameters, siteId})
+    setParameters({ ...parameters, siteId });
   }
 
   function onRegionUpdate(region: AppInstallationParameters['region']) {
-    setParameters({...parameters, region})
+    setParameters({ ...parameters, region });
   }
 
   async function onTestConnection() {
@@ -82,7 +104,7 @@ const Config = (props: ConfigProps) => {
       Notification.warning('Please set Frosmo Site ID first!');
       return;
     }
-    
+
     setTestConnectionLoading(true);
 
     try {
@@ -95,62 +117,91 @@ const Config = (props: ConfigProps) => {
         Notification.error('Connection failed for unknown reason');
       }
     }
-    
+
     setTestConnectionLoading(false);
   }
 
+  function renderSites() {
+    return sites.map(site => (<Option value={String(site.id)}>{site.url}</Option>))
+  }
+
   return (
-    <Workbench className={css({ margin: '20px' })}>
-      <Form>
-        <Heading>Frosmo configuration <img src="frosmo_logo.png" alt="Frosmo logo" width="60" style={{verticalAlign: "top", marginLeft: '20px'}}></img></Heading>
-        
-        <Paragraph>Please set up the connection first before you can start using Frosmo in your content items.</Paragraph>
+    <>
+      <div className={styles.background} />
+      <div className={styles.body}>
+        <Form>
+          <Heading>Frosmo configuration</Heading>
 
-        <>
-          <FormLabel htmlFor="token">Token</FormLabel>
-          <TextInput
-            id="token"
-            name="token"
-            type="text"
-            required
-            onChange={(event) => onTokenUpdate(event.target.value)}
-            value={parameters.token}
-          />
-          <HelpText>
-            Please enter your Frosmo Token{' '} 
-             <a href="https://docs.frosmo.com/display/dev/Graniitti+API+authentication" target="_blank" rel="noreferrer">Learn more</a>
-          </HelpText>
-        </>
+          <Paragraph>Please set up the connection first before you can start using Frosmo in your content items.</Paragraph>
 
-        <SelectField
-          name="region"
-          id="region"
-          labelText="Region"
-          helpText="Please enter your Frosmo Region"
-          // selectProps="large"
-          onChange={(event) => onRegionUpdate(event.target.value as AppInstallationParameters['region'])}
-          value={parameters.region}
-        >
-          <Option value="eu">EU</Option>
-          <Option value="eu2">EU2</Option>
-          <Option value="fi1">FI</Option>
-          <Option value="us">US</Option>
-          <Option value="asia">Asia</Option>
-        </SelectField>
+          <>
+            <FormLabel htmlFor="token">Token</FormLabel>
+            <TextInput
+              id="token"
+              name="token"
+              type="text"
+              required
+              onChange={(event) => onTokenUpdate(event.target.value)}
+              value={parameters.token}
+            />
+            <HelpText>
+              Please enter your Frosmo Token{' '}
+              <a href="https://docs.frosmo.com/display/dev/Graniitti+API+authentication" target="_blank" rel="noreferrer">Learn more</a>
+            </HelpText>
+          </>
 
-        <TextField
-          name="site_id"
-          id="site_id"
-          labelText="Site ID"
-          helpText="Please enter your Frosmo Site ID"
-          required
-          onChange={(event) => onSiteIdUpdate(Number(event.target.value))}
-          value={parameters.siteId ? String(parameters.siteId) : ''}
-        />
+          <SelectField
+            name="region"
+            id="region"
+            labelText="Frosmo Control Panel domain"
+            helpText="Please select your Frosmo Control Panel domain"
+            onChange={(event) => onRegionUpdate(event.target.value as AppInstallationParameters['region'])}
+            value={parameters.region}
+          >
+            <Option value="eu">https://admin.inpref.com</Option>
+            <Option value="eu2">https://admin.eu2.frosmo.com</Option>
+            <Option value="fi1">https://admin.fi1.frosmo.com</Option>
+            <Option value="us">https://admin.us.frosmo.com</Option>
+            <Option value="asia">https://admin.asia.frosmo.com</Option>
+          </SelectField>
 
-        <Button buttonType="primary" onClick={onTestConnection} disabled={isTestConnectionLoading} loading={isTestConnectionLoading}>Test Connection</Button>
-      </Form>
-    </Workbench>
+          <>
+            <FormLabel htmlFor="site_id">Select a site</FormLabel>
+            {sitesLoading && <Paragraph><Spinner /></Paragraph>}
+            {!sitesLoading && sites.length === 0 &&
+              <Paragraph>
+                <Note>
+                  Token or Frosmo Control Panel domain is not set correctly.
+                  Please set the token and select the correct Frosmo Control Panel domain.
+                </Note>
+              </Paragraph>
+            }
+            {!sitesLoading && sites.length > 0 &&
+              <>
+                <Select
+                  name="site_id"
+                  id="site_id"
+                  onChange={(event) => onSiteIdUpdate(Number(event.target.value))}
+                  value={String(parameters.siteId)}
+                >
+                  {renderSites()}
+                </Select>
+
+                <HelpText>
+                  Please select your site.
+              </HelpText>
+              </>
+            }
+          </>
+
+          <Button buttonType="primary" onClick={onTestConnection} disabled={isTestConnectionLoading} loading={isTestConnectionLoading}>Verify Connection</Button>
+        </Form>
+      </div>
+
+      <div className={styles.logo}>
+        <img src="frosmo_logo.png" alt="Frosmo logo" width="100" />
+      </div>
+    </>
   );
 }
 

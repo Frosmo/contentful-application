@@ -14,6 +14,7 @@ const GRANIITTI_URLS = {
 };
 
 export interface Site {
+  id: number,
   url: string;
 }
 
@@ -68,6 +69,11 @@ async function request(
 
 export async function getSite(config: Config): Promise<Site> {
   const url = `${getBaseUrl(config.region)}/sites/${config.siteId}`;
+  return request(url, config.token);
+}
+
+export async function getSites(config: Config): Promise<Site[]> {
+  const url = `${getBaseUrl(config.region)}/sites?fields=id,url`;
   return request(url, config.token);
 }
 
