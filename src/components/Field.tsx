@@ -77,8 +77,8 @@ const Field = (props: FieldProps) => {
     if (!segmentList) {
       segmentList = [];
     }
-    segmentList.push(segment);
     const newList = [...segmentList];
+    newList.push(segment);
     await props.sdk.field.setValue(newList);
     setSelectedSegments(newList);
   }
@@ -100,7 +100,7 @@ const Field = (props: FieldProps) => {
   function renderSelectedSegments() {
     const list = selectedSegments.map((segmentName, index) => {
       const segment: FrosmoSegment | undefined = segments.find(s => s.segment_name === segmentName);
-      const segmentLabel = segment ? segment.title : segmentName;
+      const segmentLabel = segment ? (segment.group ? segment.group.name + ' - ' : '') + segment.title : segmentName;
 
       return <Pill
         key={index}
