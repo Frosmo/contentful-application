@@ -112,7 +112,7 @@ const Field = (props: FieldProps) => {
       />
     });
 
-    return <Flex flexWrap="wrap" marginTop="spacingM">{list}</Flex>
+    return <>{list}</>
   }
 
   if (error) {
@@ -125,9 +125,11 @@ const Field = (props: FieldProps) => {
   // reuse Contentful's editor components
   // -> https://www.contentful.com/developers/docs/extensibility/field-editors/
   return <>
-    {selectedSegments.length === 0 && <Paragraph>No Frosmo segments linked to the content. <img src="frosmo_logo.png" alt="Frosmo logo" height="15px"></img></Paragraph>}
     {segments.length > 0 && renderSegmentsSelector()}
-    {selectedSegments.length > 0 && renderSelectedSegments()}
+    <Flex flexWrap="wrap" marginTop="spacingM">
+      {selectedSegments.length === 0 && <Paragraph>No Frosmo segments linked to the content. <img src="frosmo_logo.png" alt="Frosmo logo" height="15px"></img></Paragraph>}
+      {selectedSegments.length > 0 && renderSelectedSegments()}
+    </Flex>
   </>;
 };
 

@@ -27,6 +27,9 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     margin: `${tokens.spacing2Xl} 0 ${tokens.spacing4Xl}`
+  }),
+  helpText: css({
+    marginTop: tokens.spacingXs,
   })
 };
 

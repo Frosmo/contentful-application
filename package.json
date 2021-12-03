@@ -17,6 +17,7 @@
     "@types/react": "^17.0.21",
     "@types/react-dom": "^17.0.9",
     "cross-env": "^7.0.3",
+    "lodash.get": "^4.4.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
@@ -46,7 +47,8 @@
     ]
   },
   "devDependencies": {
-    "@contentful/app-scripts": "^0.12.43"
+    "@contentful/app-scripts": "^0.12.43",
+    "@types/lodash.get": "^4.4.6"
   },
   "homepage": "."
 }
