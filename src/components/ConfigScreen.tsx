@@ -127,12 +127,10 @@ const Config = (props: ConfigProps) => {
       <div className={styles.background} />
       <div className={styles.body}>
         <Form>
-          <Heading>Frosmo configuration</Heading>
-
-          <Paragraph>Please set up the connection first before you can start using Frosmo in your content items.</Paragraph>
+          <Heading>Frosmo app configuration</Heading>
 
           <>
-            <FormLabel htmlFor="token">Token</FormLabel>
+            <FormLabel htmlFor="token">API token</FormLabel>
             <TextInput
               id="token"
               name="token"
@@ -142,50 +140,52 @@ const Config = (props: ConfigProps) => {
               value={parameters.token}
             />
             <HelpText className={styles.helpText}>
-              Please enter your Frosmo Token{' '}
-              <a href="https://docs.frosmo.com/display/dev/Graniitti+API+authentication" target="_blank" rel="noreferrer">Learn more</a>
+              Enter your personal access token for the Frosmo Graniitti API.{' '}
+              <a href="https://docs.frosmo.com/x/MpU5AQ" target="_blank" rel="noreferrer">Learn more</a>
             </HelpText>
           </>
 
-          <SelectField
-            name="region"
-            id="region"
-            labelText="Frosmo Control Panel domain"
-            helpText="Please select your Frosmo Control Panel domain"
-            onChange={(event) => onRegionUpdate(event.target.value as AppInstallationParameters['region'])}
-            value={parameters.region}
-          >
-            <Option value="eu" key="eu">https://admin.inpref.com</Option>
-            <Option value="eu2" key="eu2">https://admin.eu2.frosmo.com</Option>
-            <Option value="fi1" key="fi1">https://admin.fi1.frosmo.com</Option>
-            <Option value="us" key="us">https://admin.us.frosmo.com</Option>
-            <Option value="asia" key="asia">https://admin.asia.frosmo.com</Option>
-          </SelectField>
+          <>
+            <SelectField
+              id="region"
+              name="region"
+              labelText="Region"
+              onChange={(event) => onRegionUpdate(event.target.value as AppInstallationParameters['region'])}
+              value={parameters.region}
+            >
+              <Option value="asia" key="asia">Asia</Option>
+              <Option value="eu" key="eu">EU</Option>
+              <Option value="eu2" key="eu2">EU2</Option>
+              <Option value="fi1" key="fi1">FI1</Option>
+              <Option value="us" key="us">US</Option>
+            </SelectField>
+            <HelpText className={styles.helpText}>
+              Select your Frosmo Platform region.{' '}
+              <a href="https://docs.frosmo.com/x/Mw0R#Frequentlyaskedquestions-Siteandcompanyinformation" target="_blank" rel="noreferrer">Learn more</a>
+            </HelpText>
+          </>
 
           <>
-            <FormLabel htmlFor="site_id">Select a site</FormLabel>
+            <FormLabel htmlFor="site_id">Site</FormLabel>
             {sitesLoading && <Paragraph><Spinner /></Paragraph>}
             {!sitesLoading && sites.length === 0 &&
                 <Note>
-                  Token or Frosmo Control Panel domain is not set correctly.
-                  Please set the token and select the correct Frosmo Control Panel domain.
+                  The API token or region is not set correctly. Enter a valid token and select the correct region for your site.
                 </Note>
             }
             {!sitesLoading && sites.length > 0 &&
               <>
                 <Select
-                  name="site_id"
                   id="site_id"
+                  name="site_id"
                   onChange={(event) => onSiteIdUpdate(Number(event.target.value))}
                   value={String(parameters.siteId)}
                 >
                   {renderSites()}
                 </Select>
-                <div>
-                  <HelpText className={styles.helpText}>
-                    Please select your site.
-                  </HelpText>
-                </div>
+                <HelpText className={styles.helpText}>
+                  Select your site.
+                </HelpText>
               </>
             }
           </>
@@ -193,9 +193,9 @@ const Config = (props: ConfigProps) => {
         <hr />
         <>
           <Heading>Assign to fields</Heading>
-          <FieldSelector 
-            contentTypes={contentTypes} 
-            compatibleFields={compatibleFields} 
+          <FieldSelector
+            contentTypes={contentTypes}
+            compatibleFields={compatibleFields}
             selectedFields={selectedFields}
             onSelectedFieldsChange={onSelectedFieldsChange} >
           </FieldSelector>

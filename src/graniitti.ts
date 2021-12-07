@@ -52,15 +52,15 @@ async function request(
     switch (res.status) {
       // The server could not authenticate the request because the access token is invalid or missing.
       case 401:
-        throw new GraniittiError('Frosmo Access Token is invalid. Please check that the Token and the Region are correct.');
+        throw new GraniittiError('The Frosmo Graniitti API access token is invalid. Check that the token and region are valid for the specified site.');
       // The server could not authorize access to the target resource because the access token does not grant sufficient permission.
       case 403:
-        throw new GraniittiError('This Frosmo Access Token is not valid for the given Site ID');
+        throw new GraniittiError('The Frosmo Graniitti API access token is not valid for the specified site.');
       // The server could not find the requested site.
       case 404:
-        throw new GraniittiError('No Frosmo Site found with the given Site ID');
+        throw new GraniittiError('The site does not exist. Check that the site ID is correct.');
       default:
-        throw new GraniittiError(result.message || 'Unknown error')
+        throw new GraniittiError(result.message || 'The app encountered an unknown error.')
     }
   }
 

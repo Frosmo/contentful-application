@@ -26,9 +26,9 @@ const Field = (props: FieldProps) => {
         if (error instanceof GraniittiError) {
           Notification.error(error.message);
         } else {
-          Notification.error("Connection to Frosmo failed");
+          Notification.error("Connection to the Frosmo Platform failed.");
         }
-        setError('Unable to load Frosmo segments. Please check the application configuration!');
+        setError('Unable to load Frosmo segments. Check the Frosmo app configuration.');
       }
     };
 
@@ -127,7 +127,7 @@ const Field = (props: FieldProps) => {
   return <>
     {segments.length > 0 && renderSegmentsSelector()}
     <Flex flexWrap="wrap" marginTop="spacingM">
-      {selectedSegments.length === 0 && <Paragraph>No Frosmo segments linked to the content. <img src="frosmo_logo.png" alt="Frosmo logo" height="15px"></img></Paragraph>}
+      {selectedSegments.length === 0 && <Paragraph>No segments selected.</Paragraph>}
       {selectedSegments.length > 0 && renderSelectedSegments()}
     </Flex>
   </>;
