@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Paragraph, Notification, Select, Option, Pill, Grid, GridItem, Note, Flex } from '@contentful/forma-36-react-components';
+import { Paragraph, Select, Option, Pill, Grid, GridItem, Note, Flex } from '@contentful/forma-36-react-components';
 import { FieldExtensionSDK } from '@contentful/app-sdk';
-import { Config as AppInstallationParameters, getSegments, GraniittiError, Segment as FrosmoSegment } from '../graniitti';
+import { Config as AppInstallationParameters, getSegments, Segment as FrosmoSegment } from '../graniitti';
 
 interface FieldProps {
   sdk: FieldExtensionSDK;
@@ -23,11 +23,6 @@ const Field = (props: FieldProps) => {
         const segments = await getSegments(parameters);
         setSegments(segments);
       } catch (error) {
-        if (error instanceof GraniittiError) {
-          Notification.error(error.message);
-        } else {
-          Notification.error("Connection to the Frosmo Platform failed.");
-        }
         setError('Unable to load Frosmo segments. Check the Frosmo app configuration.');
       }
     };
