@@ -190,16 +190,23 @@ const Config = (props: ConfigProps) => {
             }
           </>
         </Form>
-        <hr />
-        <>
-          <Heading>Assign to fields</Heading>
-          <FieldSelector
-            contentTypes={contentTypes}
-            compatibleFields={compatibleFields}
-            selectedFields={selectedFields}
-            onSelectedFieldsChange={onSelectedFieldsChange} >
-          </FieldSelector>
-        </>
+        <Form>
+          <>
+            <Heading>Convert fields into Frosmo segment selectors</Heading>
+            <HelpText className={styles.helpText}>
+              Select the fields in existing content types that you want to turn into Frosmo segment selectors.
+            </HelpText>
+          </>
+
+          <>
+            <FieldSelector
+              contentTypes={contentTypes}
+              compatibleFields={compatibleFields}
+              selectedFields={selectedFields}
+              onSelectedFieldsChange={onSelectedFieldsChange} >
+            </FieldSelector>
+          </>
+        </Form>
       </div>
 
       <div className={styles.logo}>
