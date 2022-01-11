@@ -24,7 +24,7 @@ const Config = (props: ConfigProps) => {
     // or "Save" in the configuration screen.
     // for more details see https://www.contentful.com/developers/docs/extensibility/ui-extensions/sdk-reference/#register-an-app-configuration-hook
 
-    // Get current the state of EditorInterface and other entities
+    // Get the current state of EditorInterface and other entities
     // related to this app installation
     // const currentState = await props.sdk.app.getCurrentState();
 
@@ -127,7 +127,7 @@ const Config = (props: ConfigProps) => {
       <div className={styles.background} />
       <div className={styles.body}>
         <Form>
-          <Heading>Frosmo app configuration</Heading>
+          <Heading>Frosmo Segments app configuration</Heading>
 
           <>
             <FormLabel htmlFor="token">API token</FormLabel>
