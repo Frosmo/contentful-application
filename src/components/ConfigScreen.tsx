@@ -181,6 +181,7 @@ const Config = (props: ConfigProps) => {
                   onChange={(event) => onSiteIdUpdate(Number(event.target.value))}
                   value={String(parameters.siteId)}
                 >
+                  <Option value="0" key="0">Select site</Option>
                   {renderSites()}
                 </Select>
                 <HelpText className={styles.helpText}>
